@@ -26,13 +26,10 @@ jobs:
       # Install Solana
       - name: Install Solana CLI
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget gnupg2
-          wget -qO - https://release.solana.com/stable/solana-release.gpg | gpg --dearmor > solana.gpg
-          sudo mv solana.gpg /etc/apt/trusted.gpg.d/solana.gpg
-          echo "deb https://release.solana.com/stable/apt stable main" | sudo tee /etc/apt/sources.list.d/solana.list
-          sudo apt-get update
-          sudo apt-get install -y solana-cli
+          wget https://github.com/solana-labs/solana/releases/download/v${SOLANA_VERSION}/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+          tar -xjf solana-release-x86_64-unknown-linux-gnu.tar.bz2
+          mv solana-release/bin/* ~/.cargo/bin/
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           solana --version
 
       # Install Node.js (needed for mocha tests)
