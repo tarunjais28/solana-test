@@ -24,10 +24,14 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       # Install Solana
-      - name: Install Solana CLI
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/v${SOLANA_VERSION}/install)"
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg2
+          wget -qO - https://release.solana.com/stable/solana-release.gpg | gpg --dearmor > solana.gpg
+          sudo mv solana.gpg /etc/apt/trusted.gpg.d/solana.gpg
+          echo "deb https://release.solana.com/stable/apt stable main" | sudo tee /etc/apt/sources.list.d/solana.list
+          sudo apt-get update
+          sudo apt-get install -y solana-cli
           solana --version
 
       # Install Node.js (needed for mocha tests)
