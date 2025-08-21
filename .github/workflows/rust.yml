@@ -24,6 +24,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       # Install Solana
+      - name: Install Solana CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y wget gnupg2
