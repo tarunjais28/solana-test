@@ -1,4 +1,4 @@
-name: Rust
+name: Anchor Tests
 
 on:
   push:
@@ -8,17 +8,54 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  SOLANA_VERSION: "2.2.21"
+  ANCHOR_VERSION: "0.31.1"
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Run Rust tests
-      run: cargo test --verbose
-    - name: Run Anchor tests
-      run: anchor test --verbose
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Rust
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Install Solana
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${SOLANA_VERSION}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          solana --version
+
+      # Install Node.js (needed for mocha tests)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.6.0
+
+      # Install Anchor
+      - name: Install Anchor CLI
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${ANCHOR_VERSION} anchor-cli --locked
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          anchor --version
+
+      # Cache dependencies
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+
+      # Build
+      - name: Build Rust
+        run: cargo build --verbose
+
+      # Run Rust unit tests
+      - name: Run Rust tests
+        run: cargo test --verbose
+
+      # Run Anchor tests
+      - name: Run Anchor tests
+        run: anchor test --verbose
+
