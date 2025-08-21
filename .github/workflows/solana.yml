@@ -19,7 +19,7 @@ jobs:
     - uses: metadaoproject/anchor-test@v2.2
       with:
         anchor-version: '0.31.1'
-        solana-cli-version: '2.2.21'
+        solana-cli-version: '2.2.12'
         node-version: '24.6.0'
         
     # Build Rust Program
