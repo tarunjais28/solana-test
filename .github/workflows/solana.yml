@@ -21,14 +21,22 @@ jobs:
         anchor-version: '0.31.1'
         solana-cli-version: '2.2.12'
         node-version: '24.6.0'
-        
+
+    # Check Rust Program
+    - name: Lint
+      run: cargo fmt
+
+    # Check Rust Warnings
+    - name: Warnings
+      run: cargo clippy
+      
     # Build Rust Program
     - name: Build
-      run: cargo build --verbose
+      run: cargo build
 
     # Run Rust Tests
     - name: Run tests
-      run: cargo test --verbose
+      run: cargo test
 
     # Build Anchor Program
     - name: Anchor Build
