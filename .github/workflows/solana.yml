@@ -1,0 +1,39 @@
+name: Solana
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: metadaoproject/anchor-test@v2.2
+      with:
+        anchor-version: '0.31.1'
+        solana-cli-version: '2.2.21'
+        node-version: '24.6.0'
+        
+    # Build Rust Program
+    - name: Build
+      run: cargo build --verbose
+
+    # Run Rust Tests
+    - name: Run tests
+      run: cargo test --verbose
+
+    # Build Anchor Program
+    - name: Anchor Build
+      run: anchor build
+
+    # Build Anchor Program
+    - name: Anchor Test
+      run: anchor test
